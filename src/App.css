@@ -1,5 +1,4 @@
 .App {
-  background-color: black;
   text-align: center;
 }
 
@@ -12,34 +11,6 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
-
-.item-container{
-  font-size: 30px;
-
-  color: white;
-  text-align: center;
-  text-shadow: rgb(0, 0, 0) 3px 0px 0px, rgb(0, 0, 0) 2.83487px 0.981584px 0px, rgb(0, 0, 0) 2.35766px 1.85511px 0px, rgb(0, 0, 0) 1.62091px 2.52441px 0px, rgb(0, 0, 0) 0.705713px 2.91581px 0px, rgb(0, 0, 0) -0.287171px 2.98622px 0px, rgb(0, 0, 0) -1.24844px 2.72789px 0px, rgb(0, 0, 0) -2.07227px 2.16926px 0px, rgb(0, 0, 0) -2.66798px 1.37182px 0px, rgb(0, 0, 0) -2.96998px 0.42336px 0px, rgb(0, 0, 0) -2.94502px -0.571704px 0px, rgb(0, 0, 0) -2.59586px -1.50383px 0px, rgb(0, 0, 0) -1.96093px -2.27041px 0px, rgb(0, 0, 0) -1.11013px -2.78704px 0px, rgb(0, 0, 0) -0.137119px -2.99686px 0px, rgb(0, 0, 0) 0.850987px -2.87677px 0px, rgb(0, 0, 0) 1.74541px -2.43999px 0px, rgb(0, 0, 0) 2.44769px -1.73459px 0px, rgb(0, 0, 0) 2.88051px -0.838247px 0px;
-}
-
-.item-containerRegular{
-  font-size: 30px;
-
-  color: white;
-  text-align: center;
-}
-
-
-.containerMain {
-  height:500px;
-  background-color: #7e67c7;
-  margin-top: 25px;
-  margin-bottom: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  -webkit-box-shadow: 5px 8px 15px -9px rgba(0,0,0,0.43); 
-  box-shadow: 5px 8px 15px -9px rgba(0,0,0,0.43);
 }
 
 .App-header {
@@ -57,6 +28,50 @@
   color: #61dafb;
 }
 
+.mainContainer {
+  background-image: url('https://cdn.shopify.com/s/files/1/0904/4526/articles/316942-blue-sky-with-clouds.jpg?v=1605136872');
+  background-size: cover;
+  background-position: center;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  text-align: center;
+  color: white;
+}
+
+.notifContainer {
+  background-image: url('https://static.vecteezy.com/system/resources/previews/009/925/010/original/blue-checkerboard-gingham-plaid-checkered-pattern-background-perfect-for-wallpaper-backdrop-postcard-background-vector.jpg');
+  background-size: cover;
+  background-position: center;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  text-align: center;
+  color: white;
+}
+
+.title {
+  -webkit-text-stroke: 2px rgb(0, 0, 0); /* for Safari */
+  font-size: 45px;
+}
+
+.item {
+  font-weight: bold;
+  -webkit-text-stroke: 1px rgb(0, 0, 0); /* for Safari */
+  font-size: 30px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -65,3 +80,4 @@
     transform: rotate(360deg);
   }
 }
+

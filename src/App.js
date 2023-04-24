@@ -1,48 +1,83 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { getAuth, signInAnonymously } from 'firebase/auth';
-import { getToken, onMessage } from 'firebase/messaging';
-import { messaging } from './firebase';
-import { ToastContainer, toast } from 'react-toastify'
+import messaging from './firebase';
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import addNotification from "react-push-notification";
 
 function App() {
-
-  const [data, setData] = useState("");
   const login = () =>{
     signInAnonymously(getAuth()).then(usuario=> console.log(usuario));
   }
   
+  const [data, setData] = useState("");
   const url = 'https://api.openweathermap.org/data/2.5/weather';
   const [cities, setCities] = useState(['New York', 'Los Angeles', 'Chicago', 'Houston', 'Philadelphia'])
   const [currentCity, setCurrentCity] = useState('');
-  const activarMensajes = async () => {
-    const token = await getToken(messaging, {
-      vapidKey:"dkdk"
-    }).catch(error => console.log("error al generar el token"));
-
-    if(token) console.log("Este es tu token: "  + token);
-    if(!token) console.log("No ay token ajsjdf");
-  }
 
   useEffect(() => {
     getApiDataSecond()
-    onMessage(messaging, message=>{
-      console.log("Tu mensaje", message);
-      toast(message.notification.title);
-    });
   },[])
 
+  const ButtonPush = () => {
+    const notificacion = () => {
 
-  const getApiData = async () => {
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${cities},uk&APPID=d112fc29fcb288328f4922ed132f7e30`
-    ).then((response) => response.json());
-  
-    // update the state
-    setData(response);
-    console.log(response)
+      const firebaseConfig = {
+        apiKey: "AIzaSyAqLGlFXo8ZDULfryB7cCP2TwQsdrdjaN4",
+        authDomain: "notifipush-7d34b.firebaseapp.com",
+        projectId: "notifipush-7d34b",
+        storageBucket: "notifipush-7d34b.appspot.com",
+        messagingSenderId: "360603901999",
+        appId: "1:360603901999:web:600bf6cb0c43a6814ba6da"
+      };
+
+      const fapp = initializeApp(firebaseConfig);
+      const messaging = getMessaging(fapp);
+        getToken(messaging, {
+          vapidKey:
+            "BMUrUWVVwwzGZo6np3r3YJcmRW0EqYt6XWLL-SiXmXySPqFtwEP54b0yygnZ314kICOwNeXDHpCFC_gvjxIFgks",
+        })
+          .then((currentToken) => {
+            if (currentToken) {
+              console.log("Firebase Token", currentToken);
+              onMessage(messaging, (payload) => {
+                console.log('Received foreground message', payload);
+
+                const { notification } = payload;
+                const notificationTitle = "adsadasdasd"
+                const notificationOptions = {
+                  title: notificationTitle,
+                  body: notification.body,
+                  icon: '/firebase-logo.png'
+                };
+              
+                new Notification(notificationTitle, notificationOptions);
+              });
+            } else {
+              // Show permission request UI
+              console.log(
+                "No registration token available. Request permission to generate one."
+              );
+              // ...
+            }
+          })
+          .catch((err) => {
+            console.log("An error occurred while retrieving token. ", err);
+            // ...
+          });
+        
+
+      }
+    return(
+      <div className="col-12 d-grid gap-1">
+          <button onClick={login} type="button" className="btn btn-lg btn-success fw-bold fs-3">Login</button>
+          <button onClick={notificacion} type="button" className="btn btn-lg btn-success fw-bold fs-3">Notificacion Push</button>
+      </div>
+  );
   }
+
   function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -50,22 +85,19 @@ function App() {
     }
     return array;
   }
+
   const getApiDataSecond = async () => {
-      // List of cities to choose from
       const allCities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Philadelphia', 'Phoenix', 'San Antonio', 'San Diego', 'Dallas', 'San Jose'];
-      
-      // Select 5 random cities from the list
+
       const randomCities = shuffle(allCities).slice(0, 5);
       const firstCity = randomCities.shift();
-    
-      // Set the first non-duplicate city in the array as the current city
+
       setCurrentCity(firstCity);
       
       Promise.all(randomCities.map(async city => {
-        // Parameters for the API request
+ 
         const params = { q: city, appid: 'd112fc29fcb288328f4922ed132f7e30', units: 'metric' };
-        
-        // Send the API request using the built-in fetch method
+
         const response = await fetch(`${url}?${new URLSearchParams(params)}`);
         const data = await response.json();
         return ({
@@ -85,44 +117,25 @@ function App() {
 
   return (
     <div>
-      <h1>Weather for {currentCity}: {cities.length > 0 && cities[0].description}, {cities.length > 0 && cities[0].temperature}°C</h1>
-      <ul>
-        {cities.length > 0 && cities.map(city => (
-          <li key={city.city}>
-            {city.city}: {city.description}, {city.temperature}°C
-          </li>
-        ))}
-      </ul>
+      <div className="container">
+        <div className="mainContainer">
+          <h1 className="title">Clima en {currentCity}: {cities.length > 0 && cities[0].description}, {cities.length > 0 && cities[0].temperature}°C</h1>
+          <ul>
+            {cities.length > 0 && cities.map(city => (
+              <li className = "item" key={city.city}>
+                {city.city}: {city.description}, {city.temperature}°C
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="notifContainer">
+          <h1 className="title">Notificaciones Push</h1>
+          <ButtonPush/>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
-//  return (
-//    <div className="app">
-//      {data &&
-//            <div>
-//             {
-//               data[0] ? (
-//                 <div className="item-container">
-//                   Id:{data.id} <div className="textTitle">Nombre:{" " + data.name}</div>
-//                   <div className="textTitle">Humedad:{" " + data.main.humidity}</div>
-//                   <div className="textTitle">Temperatura:{" " + data.main.temp}</div>
-//                   <div className="textTitle">Temperatura máxima:{" " + data.main.temp_max}</div>
-//                   <div className="textTitle">Temperatura minima:{" " + data.main.temp_min}</div>
-//                 </div>
-//               ):
-//               <div className="item-containerRegular">
-//                   Id:{data.id} <div className="textTitle">Nombre:{" " + data.name}</div>
-//                   <div className="textTitle">Humedad:{" " + data.main.humidity}</div>
-//                   <div className="textTitle">Temperatura:{" " + data.main.temp}</div>
-//                   <div className="textTitle">Temperatura máxima:{" " + data.main.temp_max}</div>
-//                   <div className="textTitle">Temperatura minima:{" " + data.main.temp_min}</div>
-//                 </div>
-//             }
-
-//            </div>           
-//           }
-//    </div>
-//  );
 // }
 
 //   return (
